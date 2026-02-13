@@ -40,7 +40,7 @@ OpenClaw is a powerful AI agent framework that can now run natively on Android d
 ## 📋 Prerequisites
 
 - Android device running Android 12 or higher
-- [Termux](https://f-droid.org/en/packages/com.termux/) installed from F-Droid (Goole PlayStore version is working as well for now, tested on 13 Feb 2026)
+- [Termux](https://f-droid.org/en/packages/com.termux/) installed from F-Droid (not recommend to use google playstore version, however it works - for now)
 - At least 2GB of free storage space
 - Stable internet connection
 
