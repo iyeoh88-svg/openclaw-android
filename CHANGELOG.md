@@ -5,6 +5,23 @@ All notable changes to the OpenClaw Android Installer will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026.2.9] - 2026-02-13
+
+### Added
+- 📄 **DISCLAIMER.md** - Comprehensive disclaimer clarifying project scope
+- ⚠️ Attribution notices in README and installer banner
+- 🙏 Proper credit to OpenClaw's original creators throughout documentation
+- 📝 Updated marketing materials with attribution guidelines
+
+### Changed
+- Clarified in all documentation that this is an installer tool, not OpenClaw itself
+- Updated CONTRIBUTING.md to specify contribution scope
+- Added disclaimer notices to completion messages
+- Updated README badges to show correct version (2026.2.9)
+
+### Context
+This update ensures proper attribution to OpenClaw's creators and clarifies that this project is a community-created installation tool, not the OpenClaw framework itself.
+
 ## [2026.2.8] - 2026-02-13
 
 ### Fixed
