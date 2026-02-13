@@ -33,7 +33,14 @@ OpenClaw is a powerful AI agent framework that can now run natively on Android d
 Run this command in Termux:
 
 ```bash
+# Termux main terminal
 curl -fsSL https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh | bash
+
+# First time setup (enter debian)
+proot-distro login debian
+
+# Run the openclaw setup wizard (inside debian)
+openclaw onboard
 ```
 
 ### Method 2: Manual Download
