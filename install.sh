@@ -3,7 +3,7 @@
 # OpenClaw Android Installer
 # Version: 2026.2.6
 # Description: Automated installer for OpenClaw on Android via Termux
-# Repository: https://github.com/yourusername/openclaw-android
+# Repository: https://github.com/iyeoh88-svg/openclaw-android
 ################################################################################
 
 set -e  # Exit on error
@@ -367,6 +367,9 @@ show_completion() {
     echo -e "${GREEN}║     🎉 OpenClaw Installation Complete! 🎉          ║${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${YELLOW}⚠️  Note: This installer is a community tool.${NC}"
+    echo -e "   OpenClaw framework © its original creators"
     echo ""
     echo -e "${CYAN}📝 Quick Start Guide:${NC}"
     echo ""
