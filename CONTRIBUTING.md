@@ -2,6 +2,18 @@
 
 Thank you for your interest in contributing! This document provides guidelines for contributing to the OpenClaw Android installer project.
 
+## ⚠️ Important Notice
+
+**This repository contains an installer/automation tool, not OpenClaw itself.**
+
+- **What we maintain**: The automated installation script and documentation for Android/Termux
+- **What we don't maintain**: OpenClaw framework itself (see [official OpenClaw repo](https://github.com/openclaw/openclaw))
+- **Contribution scope**: Installation process, Android compatibility, Termux setup, documentation
+
+**For OpenClaw framework issues, features, or contributions**, please visit the official OpenClaw repository.
+
+---
+
 ## Table of Contents
 - [Code of Conduct](#code-of-conduct)
 - [How Can I Contribute?](#how-can-i-contribute)
