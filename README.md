@@ -59,6 +59,13 @@ proot-distro login debian
 
 # Run the openclaw setup wizard (inside debian)
 openclaw onboard
+
+```
+
+```bash
+# If you see this error after the setup wizard, ignore it and proceed to [Starting Up]. It will still work.
+"SystemError [ERR_SYSTEM_ERROR]: A system error occurred: uv_interface_addresses returned Unknown system error 13 (Unknown system error 13)"
+
 ```
 
 ### Method 2: Manual Download
@@ -86,7 +93,7 @@ The script automatically:
 6.  Sets up convenient aliases for daily use
 7.  Configures the environment for optimal performance
 
-##  Daily Usage
+##  Start Up
 
 After installation, use these simple commands:
 
