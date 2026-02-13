@@ -252,15 +252,43 @@ apt install -y curl git build-essential ca-certificates
 if [ ! -d "$HOME/.nvm" ]; then
     log_info "Installing NVM (Node Version Manager)..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    
-    # Source NVM
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-else
-    log_info "NVM already installed"
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 fi
+
+# Source NVM - try multiple methods to ensure it loads
+log_info "Loading NVM..."
+export NVM_DIR="$HOME/.nvm"
+
+# Method 1: Direct source
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    \. "$NVM_DIR/nvm.sh"
+elif [ -s "/root/.nvm/nvm.sh" ]; then
+    export NVM_DIR="/root/.nvm"
+    \. "$NVM_DIR/nvm.sh"
+fi
+
+# Method 2: Source from bashrc if NVM added it
+if [ -s "$HOME/.bashrc" ]; then
+    # Extract and source just the NVM lines
+    grep -q 'NVM_DIR' "$HOME/.bashrc" && . "$HOME/.bashrc"
+fi
+
+# Verify NVM is loaded
+if ! command -v nvm &> /dev/null; then
+    log_error "NVM failed to load. Trying manual load..."
+    # Last resort: manual load
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+fi
+
+# Final verification
+if ! command -v nvm &> /dev/null; then
+    log_error "NVM installation failed or cannot be loaded"
+    log_info "Please check: ls -la $HOME/.nvm/"
+    exit 1
+fi
+
+log_success "NVM loaded successfully"
 
 # Install Node.js 22
 log_info "Installing Node.js v22..."
@@ -402,15 +430,11 @@ show_completion() {
     echo ""
     echo -e "${CYAN}📝 Quick Start Guide:${NC}"
     echo ""
-    echo -e "${YELLOW}Step 1:${NC} Run OpenClaw Wizard (First Timer)"
-    echo "  $ proot-distro login debian"
-    echo "  $ openclaw onboard"
-    echo ""
-    echo -e "${YELLOW}Step 2:${NC} Start OpenClaw Gateway"
+    echo -e "${YELLOW}Step 1:${NC} Start OpenClaw Gateway"
     echo "  $ proot-distro login debian"
     echo "  $ start-claw"
     echo ""
-    echo -e "${YELLOW}Step 3:${NC} Open new Termux session (swipe left)"
+    echo -e "${YELLOW}Step 2:${NC} Open new Termux session (swipe left)"
     echo "  $ proot-distro login debian"
     echo "  $ openclaw tui"
     echo ""
