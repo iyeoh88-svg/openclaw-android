@@ -11,6 +11,51 @@
 
 ## Installation Issues
 
+### ❌ "No command y found" when responding to prompts
+
+**Problem**: After typing "y" at a prompt, you see "No command y found"
+
+**Solution**:
+This is fixed in v2026.2.8. Update your installer:
+```bash
+# Download latest version
+curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+**Why it happened**: The script wasn't reading from the terminal device properly in Termux.
+
+---
+
+### ❌ Version shows strange concatenated numbers
+
+**Problem**: Update check shows `2026.2.6 2026.2.7` or similar
+
+**Solution**:
+This is fixed in v2026.2.8. The version comparison now properly trims whitespace.
+
+---
+
+### ❌ "Permission denied" creating setup script
+
+**Problem**: `/tmp/debian_setup.sh: Permission denied`
+
+**Solution**:
+```bash
+# In Termux
+# Grant storage permissions
+termux-setup-storage
+
+# Try the installer again
+./install.sh
+
+# If still failing, the installer now uses $HOME instead
+# which should work on all Termux versions
+```
+
+---
+
 ### ❌ "pkg: command not found"
 
 **Problem**: You're not running commands in Termux
