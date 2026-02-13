@@ -4,6 +4,8 @@
 [![Android](https://img.shields.io/badge/Android-12%2B-green.svg)](https://www.android.com/)
 [![Termux](https://img.shields.io/badge/Termux-Required-orange.svg)](https://termux.dev/)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/iyeoh88-svg/openclaw-android.svg)](https://github.com/iyeoh88-svg/openclaw-android/stargazers)
+[![Issues](https://img.shields.io/github/issues/iyeoh88-svg/openclaw-android.svg)](https://github.com/iyeoh88-svg/openclaw-android/issues)
 
 > **Automated installer for running OpenClaw AI agent system on Android devices via Termux**
 
