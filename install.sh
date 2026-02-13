@@ -9,7 +9,7 @@
 set -e  # Exit on error
 
 # Script Configuration
-SCRIPT_VERSION="2026.2.6"
+SCRIPT_VERSION="2026.2.7"
 SCRIPT_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh"
 VERSION_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/VERSION"
 REPO_URL="https://github.com/iyeoh88-svg/openclaw-android"
@@ -51,7 +51,7 @@ show_banner() {
     cat << "EOF"
     ╔═══════════════════════════════════════════════╗
     ║                                               ║
-    ║           🦞 OpenClaw for Android 🦞          ║
+    ║           🦞 OpenClaw for Android 🦞           ║
     ║                                               ║
     ║      Automated Installation & Setup Tool      ║
     ║                                               ║
@@ -185,7 +185,8 @@ install_debian() {
 create_debian_setup() {
     log_step "Creating Debian setup script..."
     
-    cat > /tmp/debian_setup.sh << 'DEBIAN_SCRIPT'
+    # Use $HOME instead of /tmp to avoid permission issues
+    cat > "$HOME/debian_setup.sh" << 'DEBIAN_SCRIPT'
 #!/bin/bash
 set -e
 
@@ -277,7 +278,7 @@ alias claw-logs='tail -f ~/.openclaw/logs/*.log'
 # Welcome message
 echo ""
 echo -e "\033[0;36m╔═══════════════════════════════════════╗\033[0m"
-echo -e "\033[0;36m║  🦞 OpenClaw Environment Ready 🦞     ║\033[0m"
+echo -e "\033[0;36m║  🦞 OpenClaw Environment Ready 🦞      ║\033[0m"
 echo -e "\033[0;36m╚═══════════════════════════════════════╝\033[0m"
 echo ""
 echo -e "\033[0;32mQuick Commands:\033[0m"
@@ -295,7 +296,7 @@ log_success "Debian environment setup complete!"
 echo ""
 echo -e "${GREEN}╔═══════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║                                               ║${NC}"
-echo -e "${GREEN}║         ✅ Installation Complete! ✅          ║${NC}"
+echo -e "${GREEN}║         ✅ Installation Complete! ✅           ║${NC}"
 echo -e "${GREEN}║                                               ║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════════╝${NC}"
 echo ""
@@ -307,7 +308,7 @@ echo "4. In Session 2: openclaw tui"
 echo ""
 DEBIAN_SCRIPT
 
-    chmod +x /tmp/debian_setup.sh
+    chmod +x "$HOME/debian_setup.sh"
     log_success "Setup script created"
 }
 
@@ -318,13 +319,16 @@ execute_debian_setup() {
     log_info "This will take 5-10 minutes depending on your device..."
     log_info "Please be patient and do not close Termux"
     
-    if proot-distro login debian -- /bin/bash -c "$(cat /tmp/debian_setup.sh)"; then
+    if proot-distro login debian -- /bin/bash -c "bash $HOME/debian_setup.sh"; then
         log_success "Debian setup completed successfully"
+        # Clean up the setup script
+        rm -f "$HOME/debian_setup.sh"
     else
         log_error "Debian setup failed"
-        log_info "You can try running the setup manually:"
+        log_info "Setup script saved at: $HOME/debian_setup.sh"
+        log_info "You can try running it manually:"
         log_info "  proot-distro login debian"
-        log_info "  Then run the commands from the installation guide"
+        log_info "  bash ~/debian_setup.sh"
         exit 1
     fi
 }
@@ -352,7 +356,7 @@ show_completion() {
     
     echo -e "${GREEN}╔═══════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
-    echo -e "${GREEN}║     🎉 OpenClaw Installation Complete! 🎉         ║${NC}"
+    echo -e "${GREEN}║     🎉 OpenClaw Installation Complete! 🎉          ║${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
     echo ""
