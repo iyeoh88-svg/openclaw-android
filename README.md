@@ -13,7 +13,7 @@
 
 ## ⚠️ Important Disclaimer
 
-**This project is an independent installer/automation tool created by the community.**
+**This project is an independent installer/automation tool created for the community.**
 
 -  **What this is**: An automated installation script that makes it easy to run OpenClaw on Android
 -  **What this is NOT**: I did not create OpenClaw itself
