@@ -9,7 +9,7 @@
 set -e  # Exit on error
 
 # Script Configuration
-SCRIPT_VERSION="2026.2.8"
+SCRIPT_VERSION="2026.2.9"
 SCRIPT_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh"
 VERSION_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/VERSION"
 REPO_URL="https://github.com/iyeoh88-svg/openclaw-android"
