@@ -1,6 +1,6 @@
 # 🦞 OpenClaw for Android (Termux)
 
-[![Version](https://img.shields.io/badge/version-2026.2.10-blue.svg)](https://github.com/iyeoh88-svg/openclaw-android)
+[![Version](https://img.shields.io/badge/version-2026.2.11-blue.svg)](https://github.com/iyeoh88-svg/openclaw-android)
 [![Android](https://img.shields.io/badge/Android-12%2B-green.svg)](https://www.android.com/)
 [![Termux](https://img.shields.io/badge/Termux-Required-orange.svg)](https://termux.dev/)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
