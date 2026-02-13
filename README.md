@@ -196,15 +196,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- OpenClaw team for the amazing AI agent framework
+**OpenClaw Framework:**
+- All credit for the OpenClaw AI agent system goes to its original creators and maintainers
+- Official OpenClaw: [openclaw/openclaw](https://github.com/openclaw/openclaw) (or official repository)
+- This installer is a community contribution to make OpenClaw accessible on Android
+
+**This Project:**
+- Created by: [@iyeoh88-svg](https://github.com/iyeoh88-svg)
+- Purpose: Automated installation tool for Android/Termux
+- Not affiliated with or endorsed by the official OpenClaw team
+
+**Community:**
 - Termux community for making Linux on Android possible
 - NVM team for Node.js version management
+- All contributors and testers who helped improve this installer
+
+**Note**: This is an independent community project. For OpenClaw-specific questions, features, or issues, please refer to the official OpenClaw repository.
+
 
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/iyeoh88-svg/openclaw-android/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/iyeoh88-svg/openclaw-android/discussions)
-- **Documentation**: [Wiki](https://github.com/iyeoh88-svg/openclaw-android/wiki)
 
 ---
 
