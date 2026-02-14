@@ -62,10 +62,9 @@ openclaw onboard
 
 ```
 
+If you see this error after the setup wizard, ignore it and proceed to [Start Up](#start-up).It will still work.
 ```bash
-# If you see this error after the setup wizard, ignore it and proceed to [Start Up]. It will still work.
 "SystemError [ERR_SYSTEM_ERROR]: A system error occurred: uv_interface_addresses returned Unknown system error 13 (Unknown system error 13)"
-
 ```
 
 ### Method 2: Manual Download
