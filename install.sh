@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ################################################################################
 # OpenClaw Android Installer
-# Version: 2026.2.12
+# Version: 2026.2.13
 # Description: Automated installer for OpenClaw on Android via Termux
 # Repository: https://github.com/iyeoh88-svg/openclaw-android
 ################################################################################
