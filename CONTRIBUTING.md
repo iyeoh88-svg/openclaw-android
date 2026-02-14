@@ -157,30 +157,30 @@ git checkout -b feature/my-feature
 
 ### Areas for Contribution
 
-#### 🐛 Bug Fixes
+####  Bug Fixes
 - Fix installation errors
 - Resolve compatibility issues
 - Improve error messages
 
-#### 📚 Documentation
+####  Documentation
 - Improve README clarity
 - Add more troubleshooting solutions
 - Create video tutorials
 - Translate documentation
 
-#### ✨ Features
+####  Features
 - Add new convenience commands
 - Improve performance
 - Add configuration options
 - Create Termux widgets
 
-#### 🧪 Testing
+####  Testing
 - Test on different Android versions
 - Test on various devices
 - Create automated tests
 - Performance benchmarking
 
-#### 🎨 User Experience
+####  User Experience
 - Improve installer output
 - Better progress indicators
 - More helpful error messages
