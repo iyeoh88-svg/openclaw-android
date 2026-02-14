@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ################################################################################
 # OpenClaw Android Installer
-# Version: 2026.2.11
+# Version: 2026.2.12
 # Description: Automated installer for OpenClaw on Android via Termux
 # Repository: https://github.com/iyeoh88-svg/openclaw-android
 ################################################################################
@@ -9,7 +9,7 @@
 set -e  # Exit on error
 
 # Script Configuration
-SCRIPT_VERSION="2026.2.11"
+SCRIPT_VERSION="2026.2.12"
 SCRIPT_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh"
 VERSION_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/VERSION"
 REPO_URL="https://github.com/iyeoh88-svg/openclaw-android"
@@ -51,7 +51,7 @@ show_banner() {
     cat << "EOF"
     ╔═══════════════════════════════════════════════╗
     ║                                               ║
-    ║           🦞 OpenClaw for Android 🦞           ║
+    ║               OpenClaw for Android            ║
     ║                                               ║
     ║      Automated Installation & Setup Tool      ║
     ║                                               ║
@@ -343,7 +343,7 @@ alias claw-logs='tail -f ~/.openclaw/logs/*.log'
 # Welcome message
 echo ""
 echo -e "\033[0;36m╔═══════════════════════════════════════╗\033[0m"
-echo -e "\033[0;36m║  🦞 OpenClaw Environment Ready 🦞      ║\033[0m"
+echo -e "\033[0;36m║     OpenClaw Environment Ready        ║\033[0m"
 echo -e "\033[0;36m╚═══════════════════════════════════════╝\033[0m"
 echo ""
 echo -e "\033[0;32mQuick Commands:\033[0m"
@@ -361,7 +361,7 @@ log_success "Debian environment setup complete!"
 echo ""
 echo -e "${GREEN}╔═══════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║                                               ║${NC}"
-echo -e "${GREEN}║         ✅ Installation Complete! ✅           ║${NC}"
+echo -e "${GREEN}║            Installation Complete!             ║${NC}"
 echo -e "${GREEN}║                                               ║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════════╝${NC}"
 echo ""
@@ -421,34 +421,35 @@ show_completion() {
     
     echo -e "${GREEN}╔═══════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
-    echo -e "${GREEN}║     🎉 OpenClaw Installation Complete! 🎉          ║${NC}"
+    echo -e "${GREEN}║        OpenClaw Installation Complete!            ║${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${YELLOW}⚠️  Note: This installer is a community tool.${NC}"
+    echo -e "${YELLOW}  Note: This installer is a community tool.${NC}"
     echo -e "   OpenClaw framework © its original creators"
     echo ""
-    echo -e "${CYAN}📝 Quick Start Guide:${NC}"
+    echo -e "${CYAN} Quick Start Guide:${NC}"
     echo ""
     echo -e "${YELLOW}Step 1:${NC} Start OpenClaw Gateway"
     echo "  $ proot-distro login debian"
+    echo "  $ openclaw onboard (only for first time setup)"
     echo "  $ start-claw"
     echo ""
     echo -e "${YELLOW}Step 2:${NC} Open new Termux session (swipe left)"
     echo "  $ proot-distro login debian"
     echo "  $ openclaw tui"
     echo ""
-    echo -e "${CYAN}📚 Available Commands:${NC}"
+    echo -e "${CYAN} Available Commands:${NC}"
     echo "  start-claw       - Launch gateway"
     echo "  openclaw tui     - Open interface"
     echo "  openclaw onboard - Configure API"
     echo "  update-openclaw  - Update OpenClaw"
     echo ""
-    echo -e "${CYAN}⚡ Performance Tip:${NC}"
+    echo -e "${CYAN} Performance Tip:${NC}"
     echo "  Run 'termux-wake-lock' in Termux to prevent throttling"
     echo ""
-    echo -e "${CYAN}🐛 Issues?${NC}"
-    echo "  Visit: ${BLUE}${REPO_URL}/issues${NC}"
+    echo -e "${CYAN} Issues?${NC}"
+    echo "  Visit: ${REPO_URL}/issues"
     echo ""
 }
 
