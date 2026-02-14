@@ -9,7 +9,7 @@
 set -e  # Exit on error
 
 # Script Configuration
-SCRIPT_VERSION="2026.2.12"
+SCRIPT_VERSION="2026.2.13"
 SCRIPT_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh"
 VERSION_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/VERSION"
 REPO_URL="https://github.com/iyeoh88-svg/openclaw-android"
@@ -433,6 +433,7 @@ show_completion() {
     echo -e "${YELLOW}Step 1:${NC} Start OpenClaw Gateway"
     echo "  $ proot-distro login debian"
     echo "  $ openclaw onboard (only for first time setup)"
+    echo "  $ openclaw config (if you encounter issues with openclaw onboard)"
     echo "  $ start-claw"
     echo ""
     echo -e "${YELLOW}Step 2:${NC} Open new Termux session (swipe left)"
