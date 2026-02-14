@@ -11,12 +11,50 @@
 
 ## Installation Issues
 
+### ❌ OpenClaw onboarding skips model selection
+
+**Problem**: Running `openclaw onboard` skips model selection and jumps directly to channel selection
+
+**Solution**:
+Use manual configuration instead of onboarding:
+
+```bash
+# Inside Debian (proot-distro login debian)
+
+# Run manual configuration mode
+openclaw config
+
+# This opens an interactive menu where you can manually select:
+# - model (choose your AI provider and model)
+# - skills (configure available skills)
+# - channel (telegram, whatsapp, etc.)
+# - workspace (set up your workspace)
+```
+
+**Alternative - Set via command line:**
+```bash
+# Set Anthropic (Claude) API key
+openclaw config set providers.anthropic.apiKey "your-api-key-here"
+
+# Set default provider
+openclaw config set defaultProvider anthropic
+
+# Set model
+openclaw config set defaultModel "claude-sonnet-4-20250514"
+
+# List current configuration
+openclaw config list
+```
+
+**Why it happens**: The onboarding flow may not work correctly on certain Android versions or configurations. Manual configuration provides more control.
+---
+
 ### ❌ "No command y found" when responding to prompts
 
 **Problem**: After typing "y" at a prompt, you see "No command y found"
 
 **Solution**:
-This is fixed in v2026.2.8. Update your installer: (type in "yes" or "no" as reply)
+This is fixed in v2026.2.8. Update your installer:
 ```bash
 # Download latest version
 curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
@@ -25,6 +63,34 @@ chmod +x install.sh
 ```
 
 **Why it happened**: The script wasn't reading from the terminal device properly in Termux.
+
+---
+
+### ❌ "nvm: command not found" during installation
+
+**Problem**: Node.js installation fails with "nvm: command not found"
+
+**Solution**:
+This is fixed in v2026.2.11. Update your installer:
+```bash
+curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+**Manual workaround** (if needed):
+```bash
+# Inside Debian
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Then continue with:
+nvm install 22
+nvm use 22
+npm install -g openclaw@latest
+```
+
+**Why it happened**: NVM needs to be explicitly sourced after installation. The script now does this automatically with multiple fallback methods.
 
 ---
 
