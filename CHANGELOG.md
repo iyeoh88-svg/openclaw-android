@@ -5,6 +5,36 @@ All notable changes to the OpenClaw Android Installer will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026.2.14] - 2026-02-13
+
+### Added
+-  Dedicated non-root user `openclaw` is now created inside Debian
+-  NVM, Node.js, OpenClaw, and all configs are installed under the `openclaw` user
+-  Passwordless sudo granted to `openclaw` user for package installs (e.g. Homebrew)
+-  Networking shim stored at `/home/openclaw/openclaw-shim.cjs`
+
+### Changed
+- **BREAKING**: Login command updated to `proot-distro login debian --user openclaw`
+- All documentation updated to use new login command
+- Completion message updated with correct login instructions
+- `NODE_OPTIONS="--require /root/openclaw-shim.cjs"` is now set globally in `.bashrc`
+- All openclaw commands (`onboard`, `config`, `tui`, `gateway`, etc.) now work without Error 13
+- Added `openclaw config` to the welcome message quick commands
+
+### Fixed
+-  **CRITICAL**: Fixed Error 13 appearing during `openclaw onboard`, `openclaw config`, `openclaw tui` and all other openclaw commands
+  - Root cause: The Android networking shim was only applied to `start-claw` alias
+  - Fix: Moved `NODE_OPTIONS` to a global export in `.bashrc` so ALL openclaw commands automatically use the shim
+  - `start-claw` alias simplified (no longer needs NODE_OPTIONS inline)
+-  Homebrew and other tools that refuse to run as root now work correctly
+-  `useradd` and `sudo` installed as part of base packages
+
+### Context
+[##Unable to install brew](https://github.com/iyeoh88-svg/openclaw-android/issues/2): Previously everything ran as `root` inside Debian. Tools like Homebrew explicitly block root usage. Now OpenClaw runs in a proper non-root user environment while still having sudo access for any package installations needed. 
+
+[##Error 13 after running OpenClaw Onboard](https://github.com/iyeoh88-svg/openclaw-android/issues/3): Previously the networking shim was only injected when running `start-claw`. Any other openclaw command run directly would trigger the Android Error 13. Now the shim applies globally to the entire Debian session.
+
+
 ## [2026.2.10] - 2026-02-13
 
 ### Fixed
