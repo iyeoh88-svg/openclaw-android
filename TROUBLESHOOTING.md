@@ -11,6 +11,104 @@
 
 ## Installation Issues
 
+### ❌ "No command y found" when responding to prompts
+
+**Problem**: After typing "y" at a prompt, you see "No command y found"
+
+**Solution**:
+This is fixed in v2026.2.8. Update your installer:
+```bash
+# Download latest version
+curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+**Why it happened**: The script wasn't reading from the terminal device properly in Termux.
+
+---
+
+### ❌ "Don't run this as root!" (Homebrew or other tools)
+
+**Problem**: Tools like Homebrew refuse to install because everything runs as `root` inside Debian
+
+**This is fixed in v2026.2.14** — the installer now creates a dedicated `openclaw` user.
+
+**For fresh installations**, just re-run the installer:
+```bash
+curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
+chmod +x install.sh
+./install.sh --reinstall
+```
+
+Then log in with:
+```bash
+proot-distro login debian --user openclaw
+```
+
+**Manual fix for existing installations:**
+```bash
+# Log in as root first
+proot-distro login debian
+
+# Create dedicated user
+useradd -m -s /bin/bash openclaw
+echo "openclaw ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Exit root session
+exit
+
+# Now always log in as openclaw user
+proot-distro login debian --user openclaw
+```
+
+**Why it matters**: Running as root blocks Homebrew and several other tools by design. The `openclaw` user has passwordless sudo so you can still install packages when needed.
+
+---
+
+### ❌ Error 13 during `openclaw onboard` or other commands
+
+**Problem**: 
+```
+SystemError [ERR_SYSTEM_ERROR]: uv_interface_addresses returned Unknown system error 13
+```
+Appears when running `openclaw onboard`, `openclaw config`, `openclaw tui`, etc.
+
+**Why it happens**: Android blocks low-level network interface access. The networking shim that fixes this was only applied to `start-claw` but not other commands.
+
+**Note:** `start-claw` still works fine even if you see this error during onboard.
+
+**Fix (for existing installations):**
+
+Run this inside Debian to apply the shim globally:
+
+```bash
+# Inside Debian (proot-distro login debian)
+
+# Add global shim to bashrc
+echo 'export NODE_OPTIONS="--require /root/openclaw-shim.cjs"' >> ~/.bashrc
+
+# Apply immediately
+source ~/.bashrc
+
+# Now retry - Error 13 should be gone
+openclaw onboard
+# or
+openclaw config
+```
+
+**Permanent fix (v2026.2.13+):**
+
+Re-run the installer to get the global fix applied automatically:
+
+```bash
+curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
+chmod +x install.sh
+./install.sh --reinstall
+```
+
+---
+
 ### ❌ OpenClaw onboarding skips model selection
 
 **Problem**: Running `openclaw onboard` skips model selection and jumps directly to channel selection
@@ -47,22 +145,6 @@ openclaw config list
 ```
 
 **Why it happens**: The onboarding flow may not work correctly on certain Android versions or configurations. Manual configuration provides more control.
----
-
-### ❌ "No command y found" when responding to prompts
-
-**Problem**: After typing "y" at a prompt, you see "No command y found"
-
-**Solution**:
-This is fixed in v2026.2.8. Update your installer:
-```bash
-# Download latest version
-curl -O https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh
-chmod +x install.sh
-./install.sh
-```
-
-**Why it happened**: The script wasn't reading from the terminal device properly in Termux.
 
 ---
 
