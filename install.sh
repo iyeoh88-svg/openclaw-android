@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 ################################################################################
 # OpenClaw Android Installer
-# Version: 2026.2.13
+# Version: 2026.2.14
 # Description: Automated installer for OpenClaw on Android via Termux
 # Repository: https://github.com/iyeoh88-svg/openclaw-android
 ################################################################################
@@ -9,7 +9,7 @@
 set -e  # Exit on error
 
 # Script Configuration
-SCRIPT_VERSION="2026.2.13"
+SCRIPT_VERSION="2026.2.14"
 SCRIPT_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh"
 VERSION_URL="https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/VERSION"
 REPO_URL="https://github.com/iyeoh88-svg/openclaw-android"
@@ -51,7 +51,7 @@ show_banner() {
     cat << "EOF"
     ╔═══════════════════════════════════════════════╗
     ║                                               ║
-    ║               OpenClaw for Android            ║
+    ║            OpenClaw for Android               ║
     ║                                               ║
     ║      Automated Installation & Setup Tool      ║
     ║                                               ║
@@ -234,61 +234,84 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
-log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
+log_step()    { echo -e "\n${GREEN}==>${NC} $1"; }
 
 echo -e "\n${GREEN}==> Setting up Debian environment...${NC}\n"
 
-# Update Debian packages
-log_info "Updating Debian packages..."
-apt update && apt upgrade -y
+# -----------------------------------------------------------------------
+# Step 1 – Base packages (runs as root)
+# -----------------------------------------------------------------------
+log_step "Updating Debian packages..."
+export DEBIAN_FRONTEND=noninteractive
+apt update -y
+apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
-# Install dependencies
-log_info "Installing build dependencies..."
-apt install -y curl git build-essential ca-certificates
+log_step "Installing build dependencies..."
+apt install -y curl git build-essential ca-certificates sudo
+
+# -----------------------------------------------------------------------
+# Step 2 – Create dedicated non-root user "openclaw"
+# -----------------------------------------------------------------------
+log_step "Creating dedicated user 'openclaw'..."
+
+if id "openclaw" &>/dev/null; then
+    log_info "User 'openclaw' already exists, skipping creation"
+else
+    useradd -m -s /bin/bash openclaw
+    log_success "User 'openclaw' created"
+fi
+
+# Give passwordless sudo so the user can install packages if needed
+if ! grep -q "^openclaw" /etc/sudoers 2>/dev/null; then
+    echo "openclaw ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    log_success "Sudo access granted to 'openclaw'"
+fi
+
+# -----------------------------------------------------------------------
+# Step 3 – Everything else runs as the 'openclaw' user
+# -----------------------------------------------------------------------
+log_step "Setting up environment for user 'openclaw'..."
+
+su - openclaw << 'USER_SCRIPT'
+
+# Colors inside su subshell
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+log_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Install NVM
 if [ ! -d "$HOME/.nvm" ]; then
-    log_info "Installing NVM (Node Version Manager)..."
+    log_info "Installing NVM..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 fi
 
-# Source NVM - try multiple methods to ensure it loads
-log_info "Loading NVM..."
+# Source NVM - multiple fallback methods
 export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-# Method 1: Direct source
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-    \. "$NVM_DIR/nvm.sh"
-elif [ -s "/root/.nvm/nvm.sh" ]; then
-    export NVM_DIR="/root/.nvm"
-    \. "$NVM_DIR/nvm.sh"
-fi
-
-# Method 2: Source from bashrc if NVM added it
 if [ -s "$HOME/.bashrc" ]; then
-    # Extract and source just the NVM lines
     grep -q 'NVM_DIR' "$HOME/.bashrc" && . "$HOME/.bashrc"
 fi
 
-# Verify NVM is loaded
-if ! command -v nvm &> /dev/null; then
-    log_error "NVM failed to load. Trying manual load..."
-    # Last resort: manual load
+if ! command -v nvm &>/dev/null; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 fi
 
-# Final verification
-if ! command -v nvm &> /dev/null; then
-    log_error "NVM installation failed or cannot be loaded"
-    log_info "Please check: ls -la $HOME/.nvm/"
+if ! command -v nvm &>/dev/null; then
+    log_error "NVM failed to load"
     exit 1
 fi
 
-log_success "NVM loaded successfully"
+log_success "NVM loaded"
 
 # Install Node.js 22
 log_info "Installing Node.js v22..."
@@ -296,13 +319,12 @@ nvm install 22
 nvm use 22
 nvm alias default 22
 
-# Verify Node installation
 NODE_VERSION=$(node --version)
 log_success "Node.js $NODE_VERSION installed"
 
-# Create OpenClaw networking shim
+# Create Android networking shim in user home
 log_info "Creating Android networking fix..."
-cat > /root/openclaw-shim.cjs << 'EOF'
+cat > "$HOME/openclaw-shim.cjs" << 'EOF'
 const os = require('os');
 os.networkInterfaces = () => ({
   lo: [{
@@ -315,27 +337,28 @@ os.networkInterfaces = () => ({
   }]
 });
 EOF
-log_success "Networking shim created"
+log_success "Networking shim created at $HOME/openclaw-shim.cjs"
 
 # Install OpenClaw
-log_info "Installing OpenClaw (this may take a few minutes)..."
+log_info "Installing OpenClaw..."
 npm install -g openclaw@latest
 
-# Verify installation
-if command -v openclaw &> /dev/null; then
-    OPENCLAW_VERSION=$(openclaw --version 2>/dev/null || echo "unknown")
-    log_success "OpenClaw $OPENCLAW_VERSION installed successfully"
-else
+if ! command -v openclaw &>/dev/null; then
     log_error "OpenClaw installation failed"
     exit 1
 fi
 
-# Create convenient aliases
-log_info "Setting up aliases..."
-cat >> ~/.bashrc << 'EOF'
+OPENCLAW_VERSION=$(openclaw --version 2>/dev/null || echo "unknown")
+log_success "OpenClaw $OPENCLAW_VERSION installed"
+
+# Write .bashrc config for the openclaw user
+cat >> "$HOME/.bashrc" << 'BASHRC'
+
+# Android networking fix - applied globally to ALL openclaw commands
+export NODE_OPTIONS="--require /home/openclaw/openclaw-shim.cjs"
 
 # OpenClaw aliases
-alias start-claw='NODE_OPTIONS="--require /root/openclaw-shim.cjs" openclaw gateway --bind loopback'
+alias start-claw='openclaw gateway --bind loopback'
 alias update-openclaw='npm update -g openclaw'
 alias claw-status='ps aux | grep openclaw'
 alias claw-logs='tail -f ~/.openclaw/logs/*.log'
@@ -343,33 +366,45 @@ alias claw-logs='tail -f ~/.openclaw/logs/*.log'
 # Welcome message
 echo ""
 echo -e "\033[0;36m╔═══════════════════════════════════════╗\033[0m"
-echo -e "\033[0;36m║     OpenClaw Environment Ready        ║\033[0m"
+echo -e "\033[0;36m║   OpenClaw Environment Ready          ║\033[0m"
 echo -e "\033[0;36m╚═══════════════════════════════════════╝\033[0m"
 echo ""
+echo -e "\033[0;32mUser: openclaw (non-root)\033[0m"
+echo ""
 echo -e "\033[0;32mQuick Commands:\033[0m"
-echo "  start-claw      - Start OpenClaw gateway"
-echo "  openclaw tui    - Open terminal interface"
-echo "  openclaw onboard - Configure API keys"
-echo "  update-openclaw - Update to latest version"
+echo "  start-claw       - Start OpenClaw gateway"
+echo "  openclaw tui     - Open terminal interface"
+echo "  openclaw onboard - Automated configuration"
+echo "  openclaw config  - Manual configuration menu"
+echo "  update-openclaw  - Update to latest version"
 echo ""
-EOF
+BASHRC
 
-source ~/.bashrc
+log_success "Bashrc configured"
 
-log_success "Debian environment setup complete!"
+USER_SCRIPT
 
+log_success "User setup complete!"
+
+# -----------------------------------------------------------------------
+# Final summary
+# -----------------------------------------------------------------------
 echo ""
-echo -e "${GREEN}╔═══════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║                                               ║${NC}"
-echo -e "${GREEN}║            Installation Complete!             ║${NC}"
-echo -e "${GREEN}║                                               ║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════╝${NC}"
+echo -e "${GREEN}╔═══════════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}║                                                   ║${NC}"
+echo -e "${GREEN}║          Installation Complete!                   ║${NC}"
+echo -e "${GREEN}║                                                   ║${NC}"
+echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "${YELLOW}Next Steps:${NC}"
 echo "1. Open a NEW Termux session (swipe left)"
-echo "2. Run: proot-distro login debian"
+echo "2. Run: proot-distro login debian --user openclaw"
 echo "3. In Session 1: start-claw"
-echo "4. In Session 2: openclaw tui"
+echo "4. In Session 2 (new tab): proot-distro login debian --user openclaw"
+echo "                            openclaw tui"
+echo ""
+echo -e "${YELLOW}⚠️  Note: Use '--user openclaw' when logging into Debian${NC}"
+echo "   This ensures you run as a dedicated non-root user."
 echo ""
 DEBIAN_SCRIPT
 
@@ -402,13 +437,13 @@ execute_debian_setup() {
 create_helper_scripts() {
     log_step "Creating helper scripts..."
     
-    # Create launcher script
+    # Create launcher script - uses dedicated non-root user
     cat > "$HOME/start-openclaw.sh" << 'LAUNCHER'
 #!/data/data/com.termux/files/usr/bin/bash
 echo "Starting OpenClaw..."
 echo ""
-echo "Opening Debian environment..."
-proot-distro login debian
+echo "Opening Debian environment as user 'openclaw'..."
+proot-distro login debian --user openclaw
 LAUNCHER
     chmod +x "$HOME/start-openclaw.sh"
     
@@ -421,35 +456,37 @@ show_completion() {
     
     echo -e "${GREEN}╔═══════════════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
-    echo -e "${GREEN}║        OpenClaw Installation Complete!            ║${NC}"
+    echo -e "${GREEN}║      OpenClaw Installation Complete!              ║${NC}"
     echo -e "${GREEN}║                                                   ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${YELLOW}  Note: This installer is a community tool.${NC}"
+    echo -e "${YELLOW}⚠️  Note: This installer is a community tool.${NC}"
     echo -e "   OpenClaw framework © its original creators"
     echo ""
-    echo -e "${CYAN} Quick Start Guide:${NC}"
+    echo -e "${CYAN}📝 Quick Start Guide:${NC}"
     echo ""
     echo -e "${YELLOW}Step 1:${NC} Start OpenClaw Gateway"
-    echo "  $ proot-distro login debian"
-    echo "  $ openclaw onboard (only for first time setup)"
-    echo "  $ openclaw config (if you encounter issues with openclaw onboard)"
+    echo "  $ proot-distro login debian --user openclaw"
     echo "  $ start-claw"
     echo ""
     echo -e "${YELLOW}Step 2:${NC} Open new Termux session (swipe left)"
-    echo "  $ proot-distro login debian"
+    echo "  $ proot-distro login debian --user openclaw"
     echo "  $ openclaw tui"
     echo ""
-    echo -e "${CYAN} Available Commands:${NC}"
+    echo -e "${CYAN}📚 Available Commands:${NC}"
     echo "  start-claw       - Launch gateway"
     echo "  openclaw tui     - Open interface"
-    echo "  openclaw onboard - Configure API"
+    echo "  openclaw onboard - Automated setup wizard"
+    echo "  openclaw config  - Manual configuration"
     echo "  update-openclaw  - Update OpenClaw"
     echo ""
-    echo -e "${CYAN} Performance Tip:${NC}"
+    echo -e "${YELLOW}⚠️  Always login with:${NC} proot-distro login debian --user openclaw"
+    echo "   (This runs as a dedicated non-root user)"
+    echo ""
+    echo -e "${CYAN}⚡ Performance Tip:${NC}"
     echo "  Run 'termux-wake-lock' in Termux to prevent throttling"
     echo ""
-    echo -e "${CYAN} Issues?${NC}"
+    echo -e "${CYAN}🐛 Issues?${NC}"
     echo "  Visit: ${REPO_URL}/issues"
     echo ""
 }
