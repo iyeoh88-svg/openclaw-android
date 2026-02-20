@@ -76,8 +76,8 @@ Open Termux and run:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/install.sh | bash
 ```
-
 **Wait 5-15 minutes** for automated installation to complete.
+
 
 ### Manual Download & Install
 
@@ -108,6 +108,12 @@ chmod +x install.sh
 
 # Show help
 ./install.sh --help
+```
+
+## Login & run OpenClaw setup wizard
+```bash
+proot-distro login debian --user openclaw
+openclaw onboard
 ```
 
 ## 📖 What Gets Installed
