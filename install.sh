@@ -203,7 +203,7 @@ install_debian() {
             proot-distro install debian
         else
             echo -e "${YELLOW}Debian is already installed. What would you like to do?${NC}"
-            echo "  [1] Keep existing Debian and upgrade to v2026.2.14 (adds openclaw user)"
+            echo "  [1] Keep existing Debian and upgrade to v2026.2.15 (adds openclaw user)"
             echo "  [2] Fresh install (removes existing Debian and reinstalls)"
             echo "  [3] Skip and exit"
             echo ""
