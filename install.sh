@@ -290,6 +290,15 @@ log_step()    { echo -e "\n${GREEN}==>${NC} $1"; }
 echo -e "\n${GREEN}==> Setting up Debian environment...${NC}\n"
 
 # -----------------------------------------------------------------------
+# Step 0 – Fix any interrupted dpkg operations (for existing installations)
+# -----------------------------------------------------------------------
+if [ -f "/var/lib/dpkg/updates" ] || [ -f "/var/lib/dpkg/lock" ]; then
+    log_step "Checking for interrupted package operations..."
+    dpkg --configure -a 2>/dev/null || true
+    apt-get -f install -y 2>/dev/null || true
+fi
+
+# -----------------------------------------------------------------------
 # Step 1 – Base packages (runs as root)
 # -----------------------------------------------------------------------
 log_step "Updating Debian packages..."
