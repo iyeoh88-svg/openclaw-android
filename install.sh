@@ -192,56 +192,66 @@ install_termux_packages() {
 
 # Install Debian distribution
 install_debian() {
-    log_step "Installing Debian distribution..."
+    log_step "Checking Debian installation status..."
     
-    # Initialize the upgrade flag
-    UPGRADE_EXISTING=false
+    # Temporarily disable exit-on-error for the check
+    set +e
+    DEBIAN_INSTALLED=$(proot-distro list 2>&1 | grep -c "debian.*installed")
+    set -e
     
-    # Check if Debian is already installed
-    if proot-distro list | grep -q "debian.*installed"; then
-        log_warn "Debian already installed"
+    if [ "$DEBIAN_INSTALLED" -gt 0 ]; then
+        log_warn "Debian is already installed"
         
         if [ "$REINSTALL" = "true" ]; then
-            log_info "Reinstalling Debian (fresh start)..."
+            log_info "Reinstalling Debian..."
             proot-distro remove debian -y 2>/dev/null || true
+            sleep 1
             proot-distro install debian
-        else
-            echo -e "${YELLOW}Debian is already installed. What would you like to do?${NC}"
-            echo "  [1] Keep existing Debian and upgrade to v2026.2.16 (adds openclaw user)"
-            echo "  [2] Fresh install (removes existing Debian and reinstalls)"
-            echo "  [3] Skip and exit"
-            echo ""
-            echo -n "Enter your choice (1/2/3): "
-            read -r response < /dev/tty
-            
-            case "$response" in
-                1)
-                    log_info "Upgrading existing Debian..."
-                    UPGRADE_EXISTING=true
-                    # KEY: Don't call proot-distro install - use existing
-                    ;;
-                2)
-                    log_info "Performing fresh install..."
-                    proot-distro remove debian -y 2>/dev/null || true
-                    proot-distro install debian
-                    ;;
-                3)
-                    log_info "Installation cancelled by user"
-                    exit 0
-                    ;;
-                *)
-                    log_warn "Invalid choice. Defaulting to upgrade."
-                    UPGRADE_EXISTING=true
-                    ;;
-            esac
+            return 0
         fi
+        
+        echo ""
+        echo -e "${YELLOW}╔════════════════════════════════════════════════╗${NC}"
+        echo -e "${YELLOW}║  Debian is already installed                  ║${NC}"
+        echo -e "${YELLOW}╚════════════════════════════════════════════════╝${NC}"
+        echo ""
+        echo "What would you like to do?"
+        echo ""
+        echo "  [1] Keep existing Debian and add openclaw user"
+        echo "  [2] Fresh install (removes existing Debian)"  
+        echo "  [3] Exit installer"
+        echo ""
+        echo -n "Enter your choice [1-3]: "
+        
+        read response
+        echo ""
+        
+        case "$response" in
+            1)
+                log_info "Upgrading existing Debian..."
+                return 0
+                ;;
+            2)
+                log_info "Removing existing Debian..."
+                proot-distro remove debian -y 2>/dev/null || true
+                sleep 1
+                log_info "Installing fresh Debian..."
+                proot-distro install debian
+                return 0
+                ;;
+            3)
+                exit 0
+                ;;
+            *)
+                log_info "Using existing Debian..."
+                return 0
+                ;;
+        esac
     else
-        # Debian not installed - install it
-        log_info "Installing fresh Debian..."
+        log_info "Installing Debian..."
         proot-distro install debian
+        return 0
     fi
-    
-    log_success "Debian distribution ready"
 }
 # Create setup script for Debian environment
 create_debian_setup() {
