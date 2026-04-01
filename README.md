@@ -1,4 +1,5 @@
 # 🦞 OpenClaw for Android (Termux)
+<img width="540" height="405" alt="image" src="https://github.com/user-attachments/assets/e9a9d875-74d1-410d-a9bf-3e1be55f4cb4" />
 
 [![Version](https://img.shields.io/badge/version-2026.2.15-blue.svg)](https://github.com/iyeoh88-svg/openclaw-android)
 [![Android](https://img.shields.io/badge/Android-12%2B-green.svg)](https://www.android.com/)
