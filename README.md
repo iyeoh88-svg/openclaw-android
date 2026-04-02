@@ -11,6 +11,16 @@
 > **Automated installer for running OpenClaw AI agent system on Android devices via Termux**
 
 ---
+## 📋 Prerequisites
+
+- **Android 7+** (Android 12+ recommended)
+- **[Termux from F-Droid](https://f-droid.org/en/packages/com.termux/)** - Required for compatibility
+- **2GB+ free storage** (4GB recommended)
+- **4GB+ RAM** (6GB+ recommended)
+- **Stable internet connection**
+
+> ⚠️ **Critical**: Do NOT use Termux from Google Play Store. The F-Droid version is actively maintained and required for compatibility.
+
 ## 🌸Quick Start🌸
 
 ### One-Line Install (Recommended)
@@ -49,16 +59,6 @@ curl -fsSL https://raw.githubusercontent.com/iyeoh88-svg/openclaw-android/main/i
 -  **Efficient** - Minimal storage footprint with PRoot Debian
 -  **Secure** - Passwordless sudo for package installs when needed
 -  **Battle-Tested** - 9 critical bugs fixed from community testing
-
-## 📋 Prerequisites
-
-- **Android 7+** (Android 12+ recommended)
-- **[Termux from F-Droid](https://f-droid.org/en/packages/com.termux/)** - Required for compatibility
-- **2GB+ free storage** (4GB recommended)
-- **4GB+ RAM** (6GB+ recommended)
-- **Stable internet connection**
-
-> ⚠️ **Critical**: Do NOT use Termux from Google Play Store. The F-Droid version is actively maintained and required for compatibility.
 
 
 ### Manual Download & Install
